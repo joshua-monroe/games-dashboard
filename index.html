@@ -13,50 +13,75 @@
         <br />Summoner Level: <span id="sLevel"></span>
 
         <br />Summoner ID: <span id="sID"></span>
+        <br />
+
+        <br />
+        List of mastery pages (<span id="masteryPagesCount"></span>)
+        <hr />
+        <span id="masteryPagesAll"></span>
         
         <script src="ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         
         <script>
-            var sumName = "";
+            var ID = "";
+            var APIKEY = "";
 
             function summonerLookUp() {
-                var SUMMONER_NAME = "";
-                SUMMONER_NAME = $("#userName").val();
+                ID = $("#userName").val();
+                APIKEY = $("#theKey").val();
 
-                var API_KEY = "";
-                API_KEY = $("#theKey").val();
 
-                if (SUMMONER_NAME !== "") {
+                if (ID !== "") {
 
                     $.ajax({
-                        url: 'https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/' + SUMMONER_NAME + '?api_key=' + API_KEY,
+                        url: 'https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/' + ID + '?api_key=' + APIKEY,
                         type: 'GET',
                         dataType: 'json',
                         data: {
 
                         },
                         success: function (json) {
-                            var SUMMONER_NAME_NOSPACES = SUMMONER_NAME.replace(" ", "");
+                            var userID = ID.replace(" ", "");
 
-                            SUMMONER_NAME_NOSPACES = SUMMONER_NAME_NOSPACES.toLowerCase().trim();
+                            userID = userID.toLowerCase().trim();
 
-                            summonerLevel = json[SUMMONER_NAME_NOSPACES].summonerLevel;
-                            summonerID = json[SUMMONER_NAME_NOSPACES].id;
+                            summonerLevel = json[userID].summonerLevel;
+                            summonerID = json[userID].id;
 
                             document.getElementById("sLevel").innerHTML = summonerLevel;
                             document.getElementById("sID").innerHTML = summonerID;
 
-                            sumName = json[SUMMONER_NAME_NOSPACES].name;
+                            letsGetMasteries(summonerID);
+
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            alert("error getting Summoner data!");
+                            alert("error getting Summoner data1!");
                         }
                     });
                 } else {}
             }
 
-            function Name() {
-                alert(sumName);
+            function letsGetMasteries(summonerID) {
+                $.ajax({
+                    url: "https://na.api.pvp.net/api/lol/na/v1.4/summoner/" + summonerID + "/masteries?api_key=" + APIKEY,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+
+                    },
+                    success: function (resp) {
+                        numberOfPages = resp[summonerID].pages.length;            
+                        document.getElementById("masteryPagesCount").innerHTML = numberOfPages;
+
+                        resp[summonerID].pages.forEach(function (item) {
+                            document.getElementById("masteryPagesAll").innerHTML = document.getElementById("masteryPagesAll").innerHTML + item.name + "<br />";
+                        });
+                    },
+
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("error getting Summoner data2!");
+                    }
+                });
             }
 
         </script>
