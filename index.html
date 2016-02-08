@@ -33,7 +33,7 @@
 
                 if (ID !== "") {
 
-                    $.ajax({
+                    $jQuery.ajax({
                         url: 'https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/' + ID + '?api_key=' + APIKEY,
                         type: 'GET',
                         dataType: 'json',
@@ -62,7 +62,7 @@
             }
 
             function letsGetMasteries(summonerID) {
-                $.ajax({
+                $jQuery.ajax({
                     url: "https://na.api.pvp.net/api/lol/na/v1.4/summoner/" + summonerID + "/masteries?api_key=" + APIKEY,
                     type: 'GET',
                     dataType: 'json',
